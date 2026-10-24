@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Global Express Logistics | Track Shipment</title>
+<style>
+:root{--navy:#10233f;--blue:#2459a9;--pale:#f3f6fb;--ink:#1e293b;--muted:#64748b;--line:#dbe3ee;--white:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--pale);line-height:1.5}
+header{background:var(--navy);color:white;padding:18px 5%;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{font-size:1.15rem;font-weight:800;letter-spacing:.2px}.brand span{display:block;font-size:.72rem;font-weight:500;color:#c6d6ef;letter-spacing:1.6px;margin-top:2px}
+nav a{color:#fff;text-decoration:none;margin-left:18px;font-size:.92rem}
+.hero{background:linear-gradient(120deg,#10233f,#2459a9);color:white;padding:52px 5% 66px}
+.hero .eyebrow{font-size:.78rem;letter-spacing:2px;text-transform:uppercase;color:#cfe0ff;font-weight:700}
+h1{font-size:clamp(2rem,5vw,3.25rem);line-height:1.1;margin:12px 0}
+.hero p{max-width:620px;color:#e1eafa;margin:0}
+.track-card{background:#fff;max-width:760px;margin:-32px auto 36px;padding:25px;border-radius:14px;box-shadow:0 12px 34px #12284a1c;position:relative}
+label{display:block;font-weight:700;margin-bottom:8px}
+.form-row{display:flex;gap:10px;flex-wrap:wrap}
+input{flex:1;min-width:180px;padding:14px;border:1px solid #cbd5e1;border-radius:8px;font-size:1rem}
+button{background:var(--blue);color:#fff;border:0;border-radius:8px;padding:14px 22px;font-weight:700;font-size:1rem;cursor:pointer}
+button:hover{background:#194784}
+#result{margin-top:22px}
+.notice{background:#fff8e6;border:1px solid #f1d28a;color:#704d00;padding:12px 14px;border-radius:8px;font-size:.88rem;margin-top:18px}
+.panel{background:white;border:1px solid var(--line);border-radius:12px;padding:20px;margin-top:16px}
+.status{display:inline-block;background:#e7f7ed;color:#17663a;padding:5px 10px;border-radius:20px;font-weight:700;font-size:.85rem}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:16px}
+.meta div{background:#f8fafc;padding:12px;border-radius:8px}.meta small{display:block;color:var(--muted);margin-bottom:4px}
+.timeline{list-style:none;padding:0;margin:18px 0 0}.timeline li{border-left:3px solid #c7d7f3;padding:0 0 18px 17px;margin-left:5px;position:relative}.timeline li:before{content:"";position:absolute;left:-7px;top:5px;width:11px;height:11px;border-radius:50%;background:var(--blue)}.timeline li:last-child{padding-bottom:0}.timeline strong{display:block}.timeline small{color:var(--muted)}
+section.info{max-width:1050px;margin:0 auto;padding:0 5% 38px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.info article{background:white;padding:22px;border-radius:12px;border:1px solid var(--line)}.info h2{font-size:1.08rem;margin-top:0}
+footer{background:#0b1930;color:#c8d4e7;padding:24px 5%;text-align:center;font-size:.85rem}
+@media(max-width:520px){header{align-items:flex-start}nav a{margin-left:0;margin-right:12px}.track-card{margin-left:4%;margin-right:4%;padding:18px}.hero{padding-top:38px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">GLOBAL EXPRESS LOGISTICS<span>SHIPPING • TRACKING • DELIVERY</span></div>
+  <nav><a href="#track">Track shipment</a><a href="#services">Our services</a></nav>
+</header>
+<main>
+  <section class="hero">
+    <div class="eyebrow">Shipment visibility</div>
+    <h1>Every delivery,<br>kept in reach.</h1>
+    <p>Use your tracking reference to view the latest shipment information and delivery progress.</p>
+  </section>
+  <section class="track-card" id="track">
+    <label for="tracking">Track your shipment</label>
+    <div class="form-row">
+      <input id="tracking" placeholder="Enter tracking number" autocomplete="off" aria-label="Tracking number">
+      <button onclick="trackShipment()">Track shipment</button>
+    </div>
+    <div id="result" aria-live="polite"></div>
+    <div class="notice"><strong>Demo notice:</strong> This is a website starter preview. Tracking results are sample records until you configure and maintain real shipment data. This site is not affiliated with FedEx or another carrier.</div>
+  </section>
+  <section class="info" id="services">
+    <article><h2>Shipment tracking</h2><p>Check a shipment reference and review its recorded progress.</p></article>
+    <article><h2>Domestic & international</h2><p>Present your delivery services clearly for customers across regions.</p></article>
+    <article><h2>Customer support</h2><p>Add your verified business contact details here before publishing to customers.</p></article>
+  </section>
+</main>
+<footer>© <span id="year"></span> Global Express Logistics. All rights reserved.</footer>
+<script>
+const shipments = {
+  "GEL123456": {
+    status:"In transit", origin:"London, UK", destination:"Manchester, UK",
+    updated:"24 October 2026",
+    events:[
+      {title:"Shipment information received",date:"22 October 2026",place:"London, UK"},
+      {title:"Collected by carrier",date:"23 October 2026",place:"London, UK"},
+      {title:"In transit",date:"24 October 2026",place:"Sample update"}
+    ]
+  }
+};
+function trackShipment(){
+  const value=document.getElementById("tracking").value.trim().toUpperCase();
+  const result=document.getElementById("result");
+  if(!value){result.innerHTML='<div class="panel">Please enter a tracking number.</div>';return;}
+  const s=shipments[value];
+  if(!s){result.innerHTML='<div class="panel"><strong>No sample shipment found.</strong><p>Check the reference and try again. This starter site currently contains only the sample reference <strong>GEL123456</strong>.</p></div>';return;}
+  result.innerHTML=`<div class="panel"><span class="status">${s.status}</span><h2>Tracking: ${value}</h2><div class="meta"><div><small>Origin</small><strong>${s.origin}</strong></div><div><small>Destination</small><strong>${s.destination}</strong></div><div><small>Last updated</small><strong>${s.updated}</strong></div></div><h3>Shipment history</h3><ul class="timeline">${s.events.map(e=>`<li><strong>${e.title}</strong><small>${e.date} · ${e.place}</small></li>`).join("")}</ul></div>`;
+}
+document.getElementById("year").textContent=new Date().getFullYear();
+document.getElementById("tracking").addEventListener("keydown",e=>{if(e.key==="Enter")trackShipment()});
+</script>
+</body>
+</html>
